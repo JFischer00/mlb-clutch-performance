@@ -27,27 +27,27 @@ jobs:
       - name: Terraform Apply
         run: |
           cd applications/data-collector/terraform
-          terraform init -backend-config="bucket=${{ secrets.GCP_TF_STATE_BUCKET }}"
+          terraform init -backend-config="bucket=${{ vars.GCP_TF_STATE_BUCKET }}"
           terraform apply -auto-approve \
-            -var="project_id=${{ secrets.GCP_PROJECT_ID }}" \
-            -var="region={{ secrets.GCP_REGION }}" \
-            -var="app_name={{ secrets.APP_NAME }}" \
-            -var="db_instance_name=${{ secrets.DB_INSTANCE_NAME }}" \
-            -var="db_name=${{ secrets.DB_NAME }}" \
+            -var="project_id=${{ vars.GCP_PROJECT_ID }}" \
+            -var="region={{ vars.GCP_REGION }}" \
+            -var="app_name={{ ${{ vars.COLLECTOR_SVC_NAME }} }}" \
+            -var="db_instance_name=${{ vars.DB_INSTANCE_NAME }}" \
+            -var="db_name=${{ vars.DB_NAME }}" \
             -var="db_user=${{ secrets.DB_USERNAME }}" \
             -var="db_pass=${{ secrets.DB_PASSWORD }}"
 
       - name: Build & Deploy Application
         id: deploy-cloud-run
         run: |
-          gcloud builds submit --pack=image=gcr.io/${{ secrets.GCP_PROJECT_ID }}/${{ secrets.APP_NAME }},env=GOOGLE_RUNTIME_VERSION=21
+          gcloud builds submit --pack=image=gcr.io/${{ vars.GCP_PROJECT_ID }}/${{ ${{ vars.COLLECTOR_SVC_NAME }} }},env=GOOGLE_RUNTIME_VERSION=21
           
           # Capture the generated URL from the deployment output
-          RUN_URL=$(gcloud run deploy ${{ secrets.APP_NAME }} \
-            --image gcr.io/${{ secrets.GCP_PROJECT_ID }}/${{ secrets.APP_NAME }} \
-            --region ${{ secrets.GCP_REGION }} \
+          RUN_URL=$(gcloud run deploy ${{ ${{ vars.COLLECTOR_SVC_NAME }} }} \
+            --image gcr.io/${{ vars.GCP_PROJECT_ID }}/${{ ${{ vars.COLLECTOR_SVC_NAME }} }} \
+            --region ${{ vars.GCP_REGION }} \
             --no-allow-unauthenticated \
-            --add-cloudsql-instances=${{ secrets.GCP_PROJECT_ID }}:${{ secrets.GCP_REGION }}:${{ secrets.DB_INSTANCE_NAME }} \
+            --add-cloudsql-instances=${{ vars.GCP_PROJECT_ID }}:${{ vars.GCP_REGION }}:${{ vars.DB_INSTANCE_NAME }} \
             --set-env-vars="SPRING_PROFILES_ACTIVE=gcp,DB_USERNAME=${{ secrets.DB_USERNAME }},DB_PASSWORD=${{ secrets.DB_PASSWORD }}" \
             --format='value(status.url)')
           
@@ -57,4 +57,4 @@ jobs:
         run: |
           gcloud scheduler jobs update http mlb-daily-sync \
             --uri="${{ env.SERVICE_URL }}/fetch-games" \
-            --location=${{ secrets.GCP_REGION }}
+            --location=${{ vars.GCP_REGION }}
