@@ -31,7 +31,7 @@ jobs:
           terraform apply -auto-approve \
             -var="project_id=${{ vars.GCP_PROJECT_ID }}" \
             -var="region={{ vars.GCP_REGION }}" \
-            -var="app_name={{ ${{ vars.COLLECTOR_SVC_NAME }} }}" \
+            -var="app_name={{ ${{ vars.COLLECTOR_SVC_NAME }}" \
             -var="db_instance_name=${{ vars.DB_INSTANCE_NAME }}" \
             -var="db_name=${{ vars.DB_NAME }}" \
             -var="db_user=${{ secrets.DB_USERNAME }}" \
@@ -40,11 +40,11 @@ jobs:
       - name: Build & Deploy Application
         id: deploy-cloud-run
         run: |
-          gcloud builds submit --pack=image=gcr.io/${{ vars.GCP_PROJECT_ID }}/${{ ${{ vars.COLLECTOR_SVC_NAME }} }},env=GOOGLE_RUNTIME_VERSION=21
+          gcloud builds submit --pack=image=gcr.io/${{ vars.GCP_PROJECT_ID }}/${{vars.COLLECTOR_SVC_NAME }},env=GOOGLE_RUNTIME_VERSION=21
           
           # Capture the generated URL from the deployment output
-          RUN_URL=$(gcloud run deploy ${{ ${{ vars.COLLECTOR_SVC_NAME }} }} \
-            --image gcr.io/${{ vars.GCP_PROJECT_ID }}/${{ ${{ vars.COLLECTOR_SVC_NAME }} }} \
+          RUN_URL=$(gcloud run deploy ${{vars.COLLECTOR_SVC_NAME }} \
+            --image gcr.io/${{ vars.GCP_PROJECT_ID }}/${{vars.COLLECTOR_SVC_NAME }} \
             --region ${{ vars.GCP_REGION }} \
             --no-allow-unauthenticated \
             --add-cloudsql-instances=${{ vars.GCP_PROJECT_ID }}:${{ vars.GCP_REGION }}:${{ vars.DB_INSTANCE_NAME }} \
