@@ -1,4 +1,4 @@
-package edu.colorado.jofi1212.mlbclutch.datacollector
+package edu.colorado.jofi1212.mlbclutch.datacollector.config
 
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean

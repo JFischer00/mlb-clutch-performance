@@ -43,5 +43,6 @@ jobs:
       - name: Update Scheduler Target URL
         run: |
           gcloud scheduler jobs update http mlb-daily-sync \
-            --uri="${{ env.SERVICE_URL }}/fetch-games" \
+            --uri="${{ env.SERVICE_URL }}/api/tasks/fetch-games" \
+          --oidc-service-account-email="mlb-cron-invoker@${{ vars.GCP_PROJECT_ID }}.iam.gserviceaccount.com" \
             --location=${{ vars.GCP_REGION }}

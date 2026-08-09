@@ -1,5 +1,6 @@
-package edu.colorado.jofi1212.mlbclutch.datacollector
+package edu.colorado.jofi1212.mlbclutch.datacollector.game.dto
 
+import edu.colorado.jofi1212.mlbclutch.datacollector.game.Game
 import java.time.Instant
 
 data class MlbResponse(val dates: List<DateContainer>)

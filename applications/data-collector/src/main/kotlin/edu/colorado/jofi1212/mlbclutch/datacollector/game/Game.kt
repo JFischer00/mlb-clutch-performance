@@ -1,4 +1,4 @@
-package edu.colorado.jofi1212.mlbclutch.datacollector
+package edu.colorado.jofi1212.mlbclutch.datacollector.game
 
 import jakarta.persistence.Entity
 import jakarta.persistence.Id

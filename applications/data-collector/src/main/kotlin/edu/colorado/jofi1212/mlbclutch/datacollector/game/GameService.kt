@@ -1,5 +1,7 @@
-package edu.colorado.jofi1212.mlbclutch.datacollector
+package edu.colorado.jofi1212.mlbclutch.datacollector.game
 
+import edu.colorado.jofi1212.mlbclutch.datacollector.game.dto.MlbResponse
+import edu.colorado.jofi1212.mlbclutch.datacollector.game.dto.toDomain
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.reactive.function.client.WebClient

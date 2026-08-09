@@ -1,5 +1,6 @@
-package edu.colorado.jofi1212.mlbclutch.datacollector
+package edu.colorado.jofi1212.mlbclutch.datacollector.task
 
+import edu.colorado.jofi1212.mlbclutch.datacollector.game.GameService
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
@@ -29,6 +30,5 @@ class TaskController(private val gameService: GameService) {
 
                 Mono.just(ResponseEntity.internalServerError().body("Task failed processing games"))
             }
-//            .onErrorReturn(ResponseEntity.internalServerError().body("Task failed processing games"))
     }
 }
