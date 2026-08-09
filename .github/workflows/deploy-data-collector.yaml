@@ -27,7 +27,7 @@ jobs:
       - name: Build & Deploy Application
         id: deploy-cloud-run
         run: |
-          gcloud builds submit --pack=image=gcr.io/${{ vars.GCP_PROJECT_ID }}/${{vars.COLLECTOR_SVC_NAME }},env=GOOGLE_RUNTIME_VERSION=21
+          gcloud builds submit applications/data-collector --pack=image=gcr.io/${{ vars.GCP_PROJECT_ID }}/${{vars.COLLECTOR_SVC_NAME }},env=GOOGLE_RUNTIME_VERSION=21
           
           # Capture the generated URL from the deployment output
           RUN_URL=$(gcloud run deploy ${{vars.COLLECTOR_SVC_NAME }} \
@@ -35,7 +35,7 @@ jobs:
             --region ${{ vars.GCP_REGION }} \
             --no-allow-unauthenticated \
             --add-cloudsql-instances=${{ vars.GCP_PROJECT_ID }}:${{ vars.GCP_REGION }}:${{ vars.DB_INSTANCE_NAME }} \
-            --set-env-vars="SPRING_PROFILES_ACTIVE=gcp,DB_USERNAME=${{ secrets.DB_USERNAME }},DB_PASSWORD=${{ secrets.DB_PASSWORD }}" \
+            --set-env-vars="SPRING_PROFILES_ACTIVE=gcp,CLOUD_SQL_CONNECTION_NAME=${{ vars.GCP_PROJECT_ID }}:${{ vars.GCP_REGION }}:${{ vars.DB_INSTANCE_NAME }},SPRING_CLOUD_GCP_SQL_DATABASE_NAME=${{ vars.DB_NAME }},DB_USERNAME=${{ secrets.DB_USERNAME }},DB_PASSWORD=${{ secrets.DB_PASSWORD }}" \
             --format='value(status.url)')
           
           echo "SERVICE_URL=$RUN_URL" >> $GITHUB_ENV

@@ -1,15 +1,6 @@
 spring:
   application:
     name: data-collector
-  datasource:
-    url: jdbc:postgresql://localhost:5432/mlb_db
-    username: postgres
-    password: postgres
-    driver-class-name: org.postgresql.Driver
-  cloud:
-    gcp:
-      sql:
-        enabled: false
   jpa:
     hibernate:
       ddl-auto: validate
