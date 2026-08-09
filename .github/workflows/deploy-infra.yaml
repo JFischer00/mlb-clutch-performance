@@ -1,0 +1,35 @@
+name: Deploy Infrastructure
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'applications/data-collector/terraform/**'
+
+jobs:
+  terraform:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Google Auth
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      - name: Terraform Apply
+        run: |
+          cd applications/data-collector/terraform
+          terraform init -backend-config="bucket=${{ vars.GCP_TF_STATE_BUCKET }}"
+          terraform apply -auto-approve \
+            -var="project_id=${{ vars.GCP_PROJECT_ID }}" \
+            -var="region=${{ vars.GCP_REGION }}" \
+            -var="app_name=${{ vars.COLLECTOR_SVC_NAME }}" \
+            -var="db_instance_name=${{ vars.DB_INSTANCE_NAME }}" \
+            -var="db_name=${{ vars.DB_NAME }}" \
+            -var="db_user=${{ secrets.DB_USERNAME }}" \
+            -var="db_pass=${{ secrets.DB_PASSWORD }}"

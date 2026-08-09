@@ -6,6 +6,7 @@ on:
       - main
     paths:
       - 'applications/data-collector/**'
+      - '!applications/data-collector/terraform/**'
   workflow_dispatch:
 
 jobs:
@@ -22,22 +23,6 @@ jobs:
 
       - name: Set up Cloud SDK
         uses: google-github-actions/setup-gcloud@v2
-
-      - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v3
-
-      - name: Terraform Apply
-        run: |
-          cd applications/data-collector/terraform
-          terraform init -backend-config="bucket=${{ vars.GCP_TF_STATE_BUCKET }}"
-          terraform apply -auto-approve \
-            -var="project_id=${{ vars.GCP_PROJECT_ID }}" \
-            -var="region=${{ vars.GCP_REGION }}" \
-            -var="app_name=${{ vars.COLLECTOR_SVC_NAME }}" \
-            -var="db_instance_name=${{ vars.DB_INSTANCE_NAME }}" \
-            -var="db_name=${{ vars.DB_NAME }}" \
-            -var="db_user=${{ secrets.DB_USERNAME }}" \
-            -var="db_pass=${{ secrets.DB_PASSWORD }}"
 
       - name: Build & Deploy Application
         id: deploy-cloud-run
