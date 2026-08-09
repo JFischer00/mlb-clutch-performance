@@ -5,6 +5,7 @@ on:
     branches: [ main ]
     paths:
       - 'applications/data-collector/terraform/**'
+  workflow_dispatch:
 
 jobs:
   terraform:
