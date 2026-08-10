@@ -1,7 +1,7 @@
 ## 1. Clone the repo
 
 ```bash
-git clone <your-repo-url>
+git clone https://github.com/JFischer00/mlb-clutch-performance.git
 cd mlb-clutch-performance/applications/data-collector
 ```
 
