@@ -39,7 +39,9 @@ jobs:
       - name: Build & Deploy Application
         id: deploy-cloud-run
         run: |
-          gcloud builds submit applications/data-collector --pack=image=gcr.io/${{ vars.GCP_PROJECT_ID }}/${{vars.COLLECTOR_SVC_NAME }},env=GOOGLE_RUNTIME_VERSION=21
+          gcloud builds submit applications/data-collector \
+            --pack=image=gcr.io/${{ vars.GCP_PROJECT_ID }}/${{vars.COLLECTOR_SVC_NAME }},env=GOOGLE_RUNTIME_VERSION=21 \
+            --config=<(echo "logsBucket: 'gs://${{ vars.GCP_PROJECT_ID }}_cloudbuild/logs/'"; echo "options:"; echo "  logging: GCS_ONLY")
           
           # Capture the generated URL from the deployment output
           RUN_URL=$(gcloud run deploy ${{vars.COLLECTOR_SVC_NAME }} \
