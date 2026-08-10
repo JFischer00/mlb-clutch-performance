@@ -1,0 +1,16 @@
+steps:
+  - name: 'gcr.io/k8s-skaffold/pack'
+    entrypoint: 'pack'
+    args:
+      - 'build'
+      - 'gcr.io/$_GCP_PROJECT_ID/$_COLLECTOR_SVC_NAME:latest'
+      - '--builder'
+      - 'gcr.io/buildpacks/builder:v1'
+      - '--env'
+      - 'GOOGLE_RUNTIME_VERSION=21'
+      - '--path'
+      - '.'
+
+logsBucket: 'gs://${_GCP_PROJECT_ID}_cloudbuild/logs/'
+options:
+  logging: GCS_ONLY
