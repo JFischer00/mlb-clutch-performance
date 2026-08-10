@@ -47,7 +47,7 @@ jobs:
           
           # Capture the generated URL from the deployment output
           RUN_URL=$(gcloud run deploy ${{vars.COLLECTOR_SVC_NAME }} \
-            --image gcr.io/${{ vars.GCP_PROJECT_ID }}/${{vars.COLLECTOR_SVC_NAME }} \
+            --image ${{ vars.GCP_REGION }}-docker.pkg.dev/${{ vars.GCP_PROJECT_ID }}/app-repo/${{vars.COLLECTOR_SVC_NAME }} \
             --region ${{ vars.GCP_REGION }} \
             --no-allow-unauthenticated \
             --add-cloudsql-instances=${{ vars.GCP_PROJECT_ID }}:${{ vars.GCP_REGION }}:${{ vars.DB_INSTANCE_NAME }} \
