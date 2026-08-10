@@ -43,7 +43,7 @@ jobs:
         run: |
           gcloud builds submit applications/data-collector \
             --config=applications/data-collector/cloudbuild.yaml \
-            --substitutions=_GCP_PROJECT_ID="${{ vars.GCP_PROJECT_ID }}",_COLLECTOR_SVC_NAME="${{ vars.COLLECTOR_SVC_NAME }}"
+            --substitutions=_GCP_PROJECT_ID="${{ vars.GCP_PROJECT_ID }}",_COLLECTOR_SVC_NAME="${{ vars.COLLECTOR_SVC_NAME }}",_LOCATION="${{ vars.GCP_REGION }}"
           
           # Capture the generated URL from the deployment output
           RUN_URL=$(gcloud run deploy ${{vars.COLLECTOR_SVC_NAME }} \

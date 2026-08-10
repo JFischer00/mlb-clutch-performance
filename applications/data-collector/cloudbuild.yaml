@@ -1,15 +1,20 @@
 steps:
-  - name: 'gcr.io/k8s-skaffold/pack'
+  - name: 'docker.io/buildpacksio/pack:0.36.0'
     entrypoint: 'pack'
+    env:
+      - 'PACK_VOLUME_KEY=cloudbuild-pack-cache'
     args:
       - 'build'
-      - 'gcr.io/$_GCP_PROJECT_ID/$_COLLECTOR_SVC_NAME:latest'
+      - '$_LOCATION-docker.pkg.dev/$_GCP_PROJECT_ID/app-repo/$_COLLECTOR_SVC_NAME:latest'
       - '--builder'
-      - 'gcr.io/buildpacks/builder:v1'
+      - 'gcr.io/buildpacks/builder:google-22'
       - '--env'
       - 'GOOGLE_RUNTIME_VERSION=21'
       - '--path'
       - '.'
+      - '--cache-image'
+      - '$_LOCATION-docker.pkg.dev/$_GCP_PROJECT_ID/app-repo/$_COLLECTOR_SVC_NAME:cache'
+      - '--publish'
 
 logsBucket: 'gs://${_GCP_PROJECT_ID}_cloudbuild/logs/'
 options:
