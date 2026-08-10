@@ -6,7 +6,6 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
-import reactor.core.publisher.Mono
 import java.time.LocalDate
 
 data class TaskPayload(
@@ -17,18 +16,18 @@ data class TaskPayload(
 @RequestMapping("/api/tasks")
 class TaskController(private val gameService: GameService) {
     @PostMapping("/fetch-games")
-    fun handleFetchGames(@RequestBody payload: TaskPayload?): Mono<ResponseEntity<String>> {
+    fun handleFetchGames(@RequestBody payload: TaskPayload?): ResponseEntity<String> {
         val targetDate = payload?.date ?: LocalDate.now().minusDays(1)
 
-        return gameService.fetchAndSaveGames(targetDate)
-            .collectList()
-            .map { savedGames ->
-                ResponseEntity.ok("Successfully processed ${savedGames.size} games.")
-            }
-            .onErrorResume { error ->
-                error.printStackTrace()
+        return try {
+            val savedGames = gameService.fetchAndSaveGames(targetDate)
 
-                Mono.just(ResponseEntity.internalServerError().body("Task failed processing games"))
-            }
+            ResponseEntity.ok("Successfully processed ${savedGames.size} games.")
+        }
+        catch (e: Exception) {
+            e.printStackTrace()
+
+            ResponseEntity.internalServerError().body("Task failed processing games")
+        }
     }
 }
